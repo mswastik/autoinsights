@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+    <head>
+      <link href="https://unpkg.com/tabulator-tables@5.6.1/dist/css/tabulator.min.css" rel="stylesheet">
+      <link href="https://unpkg.com/tabulator-tables@5.6.1/dist/css/tabulator_semanticui.min.css" rel="stylesheet">
+      <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/fomantic-ui@2.9.3/dist/semantic.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+        <script src="https://d3js.org/d3-array.v2.min.js"></script>
+        <script src="https://www.unpkg.com/@tidyjs/tidy/dist/umd/tidy.min.js"></script>
+        <script type="text/javascript" src="https://unpkg.com/tabulator-tables@5.6.1/dist/js/tabulator.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/fomantic-ui@2.9.3/dist/semantic.min.js"></script>
+    </head>
+    <style>
+      .item {
+        width: 97px;
+        height: 50px;
+        transition: all 2s;
+      }
+    </style>
+    <body>
+      <div class="ui top fixed sticky row grid segment" style="width:100%;height:4em;padding-top:0px;margin-top:-6px;margin-bottom: 0px;padding-bottom: 0px;padding-left:10px ;background-color:white; white-space: nowrap;">
+      <h1 class="ui header column"><span style="color:#FFCC33; white-space: nowrap;"><b>Planning Advisor</b></span> for {{loc}} - {{prod}}</h1><p class="ui right floated column">{{today}}</p></div>
+      <div class="ui grid" style="margin-top: 50px;">
+      <div class="ui one wide column">
+        <div class="ui inverted vertical menu" style="position: sticky; top:120px;max-width: 97px;">
+        <a class="item blue" id="tt1" href="#td1" >Growth</a>
+        <a class="item violet" id="tt2" href="#td2" >FVA</a>
+        <a class="item purple" href="#td3" >-ve Bias</a>
+        <a class="item purple" href="#td4">+ve Bias</a>
+        <a class="item pink" href="#td5">Error Increase</a>
+        <a class="item pink" href="#td7">Error Contributor</a>
+        <a class="item green" href="#td8">Fidelity</a>
+      </div></div>
+        <div class="ui nine wide column" id="cont">
+            <div class="ui segment mitem" id="td1"><h2 style="margin-top:30px;"><span style='color:#FFCC33'>YoY</span> Change vs LY</h2>
+              <p>Brands with high difference in next year growth compared to this year's growth</p>
+              <!-- <button class="ui btn" onclick="">Download</button>-->
+            <div class="ui striped celled very compact" id="table1"></div></div>
+            <div class="ui segment mitem" id="td2"><h2 style="margin-top:30px;"><span style='color:#FFCC33'>Top</span> -ve FVA</h2>
+              <p>Top Error contributors with -FVA (Stat Accu. > DF Accu) in last 3 months</p>
+            <div class="ui striped celled very compact" id="table2"></div></div>
+            <div class="ui segment mitem" id="td3"><h2 style="margin-top:30px;"><span style='color:#FFCC33'>Top</span> -ve 3M DF Bias</h2>
+              <p>Top Error contributors with high negative Bias in last 3 months</p>
+            <div class="ui striped celled very compact" id="table3"></div></div>
+            <div class="ui segment mitem" id="td4"><h2 style="margin-top:30px;"><span style='color:#FFCC33'>High</span> +ve 3M DF Bias</h2>
+              <p>Top Error contributors with high positive Bias in last 3 months</p>
+            <div class="ui striped celled very compact" id="table4"></div></div>
+            <div class="ui segment mitem" id="td5"><h2 style="margin-top:30px;"><span style='color:#FFCC33'>Maximum</span> Err Increase</h2>
+              <p>Items which saw maximum increase in error last month </p>
+            <div class="ui striped celled very compact" id="table5"></div></div>
+            <div class="ui segment mitem" id="td7"><h2 style="margin-top:30px;"><span style='color:#FFCC33'>High</span> Err Contributor</h2>
+              <p>Items where Error Contribution is higher than Order Contribution in last 3 months</p>
+            <div class="ui striped celled very compact" id="table7"></div></div>
+            <div class="ui segment mitem" id="td8"><h2 style="margin-top:30px;"><span style='color:#FFCC33'>High</span> Fidelity Items</h2>
+              <p>Items where changes between L0 and L1 is high</p>
+            <div class="ui striped celled very compact" id="table8"></div></div>
+          </div>
+        <div id="chd" class="ui segment six wide column" style="max-height: 450px;position: sticky;top: 55px;">
+          <div class="ui left pointing label" style="margin-bottom: 10px;" id="ctitle">Select any {{rl|safe}} to view its trend</div>
+          <div id="myChart" style="width: 100%; height: 100%;"></div></div>
+          </div>
+      <script>
+        console.log({{today|tojson}})
+        //var today = new Date({{today|tojson}});
+        //var lmd = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+        var lmd = new Date({{today|tojson}});
+        console.log(lmd);
+        //console.log({{rl}});
+        rl={{rl|tojson}}
+        //rl=rl.trim()
+        const { tidy, mutate, arrange, desc, summarize, sum, groupBy, select,filter,distinct } = Tidy;
+        df={{jdf|safe}};
+        ph1={{ph1|tojson}}
+        var copyIcon = function(cell, formatterParams){return "<i class='copy outline icon'></i>";};
+        mon=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        df=tidy(df,mutate({'SALES_DATE': (d) => new Date(d['SALES_DATE'])}));
+        //df=tidy(df,mutate({'SALES_DATE':(d) => `${mon[d['SALES_DATE'].getMonth()]}-${String(d['SALES_DATE'].getFullYear()).slice(2,4)}`}));
+        function tdff(tdf,cn,ide) {
+          if (ide=="#table1") {
+            rr=true
+            a=tdf.filter((d) => d.Measure =='YoY growth')
+            y=tdf.filter((d) => d.Measure =='ActwFC')
+            Object.keys(a).forEach(function(r) { a[r]['_children']=[]; a[r]['_children']=y[r] })
+            var cc=[] 
+          } else {
+            rr=false
+            a=tdf
+            var cc =[{formatter:copyIcon, width:40, hozAlign:"center", cellClick:function(e, cell){
+            ct=cell.getRow().getData()[rl]
+            navigator.clipboard.writeText(ct);
+            $.toast({class: 'success',position: 'top center',message: "Copied : " + ct});
+            /*fetch("https://graph.microsoft.com/v1.0/users/swastik.mishra@stryker.com/drive/root:/data/autoinsightsdata.xlsx:/workbook/worksheets/Sheet1/tables/Table1/rows", {
+                method: "POST",
+                body: {"index": null, "values": [["click",cell.getRow().getData().CatalogNumber,$.title,today]]},
+                headers: {
+                  "Content-type": "application/json;",
+                  Authorization: "Bearer eyJ0eXAiOiJKV1QiLCJub25jZSI6ImtJNFFja0h3MkJrNmllV0pFQnZMWlU5aHFSamIxVWFVZEQwNE9veEViVHciLCJhbGciOiJSUzI1NiIsIng1dCI6IkwxS2ZLRklfam5YYndXYzIyeFp4dzFzVUhIMCIsImtpZCI6IkwxS2ZLRklfam5YYndXYzIyeFp4dzFzVUhIMCJ9.eyJhdWQiOiIwMDAwMDAwMy0wMDAwLTAwMDAtYzAwMC0wMDAwMDAwMDAwMDAiLCJpc3MiOiJodHRwczovL3N0cy53aW5kb3dzLm5ldC80ZTlkYmJmYi0zOTRhLTQ1ODMtODgxMC01M2Y4MWY4MTllM2IvIiwiaWF0IjoxNzE3MjI5MzA1LCJuYmYiOjE3MTcyMjkzMDUsImV4cCI6MTcxNzIzMzU1NiwiYWNjdCI6MCwiYWNyIjoiMSIsImFpbyI6IkFWUUFxLzhXQUFBQWdFM1FGc2JWTUhxRU14aStaUHFBV1l2dDl4VWcreGhRTGVMdW9VNWQ0eTlnVnl4VWp1RWF1VzF5VlJJMVl4cXIycER6bVlGbmpDS0hZd2pCZDM4M3Q2aG5KRkN5YmVabHFLT25VbWFQOG9JPSIsImFtciI6WyJwd2QiLCJtZmEiXSwiYXBwX2Rpc3BsYXluYW1lIjoiR3JhcGggRXhwbG9yZXIiLCJhcHBpZCI6ImRlOGJjOGI1LWQ5ZjktNDhiMS1hOGFkLWI3NDhkYTcyNTA2NCIsImFwcGlkYWNyIjoiMCIsImNhcG9saWRzX2xhdGViaW5kIjpbIjg4NjFiNDAxLTg4M2YtNDhmYi1hNzAxLWU2ZjZiNzZkM2RkYyJdLCJmYW1pbHlfbmFtZSI6Ik1pc2hyYSIsImdpdmVuX25hbWUiOiJTd2FzdGlrIiwiaWR0eXAiOiJ1c2VyIiwiaXBhZGRyIjoiMjQwNToyMDE6MWM6NTA0NjphMWQyOjY0Zjk6NjA5MDo2MDljIiwibmFtZSI6Ik1pc2hyYSwgU3dhc3RpayIsIm9pZCI6ImI5ODViZGVhLWE1NWUtNDEzZS1hMjlmLTE2MWIxMGE1MzJiNCIsIm9ucHJlbV9zaWQiOiJTLTEtNS0yMS03MjUzNDU1NDMtMTk3MjU3OTA0MS0yMTQ2NTg4ODIxLTEzMDg4MjgiLCJwbGF0ZiI6IjMiLCJwdWlkIjoiMTAwMzIwMDIzNjRENEQzQyIsInJoIjoiMC5BU2NBLTd1ZFRrbzVnMFdJRUZQNEg0R2VPd01BQUFBQUFBQUF3QUFBQUFBQUFBQW5BRGsuIiwic2NwIjoiQ2FsZW5kYXJzLlJlYWRXcml0ZSBDaGF0LlJlYWQgQ2hhdC5SZWFkQmFzaWMgQ29udGFjdHMuUmVhZFdyaXRlIERldmljZU1hbmFnZW1lbnRSQkFDLlJlYWQuQWxsIERldmljZU1hbmFnZW1lbnRTZXJ2aWNlQ29uZmlnLlJlYWQuQWxsIGVEaXNjb3ZlcnkuUmVhZC5BbGwgZURpc2NvdmVyeS5SZWFkV3JpdGUuQWxsIEZpbGVzLlJlYWRXcml0ZS5BbGwgR3JvdXAuUmVhZFdyaXRlLkFsbCBJZGVudGl0eVJpc2tFdmVudC5SZWFkLkFsbCBNYWlsLlJlYWQgTWFpbC5SZWFkV3JpdGUgTWFpbGJveFNldHRpbmdzLlJlYWRXcml0ZSBOb3Rlcy5SZWFkV3JpdGUuQWxsIG9wZW5pZCBQZW9wbGUuUmVhZCBQbGFjZS5SZWFkIFByZXNlbmNlLlJlYWQgUHJlc2VuY2UuUmVhZC5BbGwgUHJpbnRlclNoYXJlLlJlYWRCYXNpYy5BbGwgUHJpbnRKb2IuQ3JlYXRlIFByaW50Sm9iLlJlYWRCYXNpYyBwcm9maWxlIFJlcG9ydHMuUmVhZC5BbGwgU2l0ZXMuUmVhZFdyaXRlLkFsbCBUYXNrcy5SZWFkV3JpdGUgVXNlci5SZWFkIFVzZXIuUmVhZEJhc2ljLkFsbCBVc2VyLlJlYWRXcml0ZSBVc2VyLlJlYWRXcml0ZS5BbGwgZW1haWwiLCJzaWduaW5fc3RhdGUiOlsia21zaSJdLCJzdWIiOiJHTlowRmxwVE1TVllqdXNEUGQ3UWk2MmpYZzdsX2tyVXhBV0NyMDZzcnhNIiwidGVuYW50X3JlZ2lvbl9zY29wZSI6Ik5BIiwidGlkIjoiNGU5ZGJiZmItMzk0YS00NTgzLTg4MTAtNTNmODFmODE5ZTNiIiwidW5pcXVlX25hbWUiOiJzd2FzdGlrLm1pc2hyYUBzdHJ5a2VyLmNvbSIsInVwbiI6InN3YXN0aWsubWlzaHJhQHN0cnlrZXIuY29tIiwidXRpIjoiU0lnVHRueVFvVS1uT09MVXlraVBBQSIsInZlciI6IjEuMCIsIndpZHMiOlsiYjc5ZmJmNGQtM2VmOS00Njg5LTgxNDMtNzZiMTk0ZTg1NTA5Il0sInhtc19jYyI6WyJDUDEiXSwieG1zX3NzbSI6IjEiLCJ4bXNfc3QiOnsic3ViIjoiT3JYNHBIU1E4ZEJTUllLU3ZfS05uUWtETnBST1o4OUx1V0tROFVRX0tjZyJ9LCJ4bXNfdGNkdCI6MTM5MDg2MTc5M30.aETDSVrlRLcWNniXKmoZxKhDwl9HcYjmfh-WpUjGFkwvRRkCNMs0_83qKgDNIVxJtN5XXHusjNjMiyFUB-EWEKuELV-tbE4fIDtDLR1NB55C0fH1u552NM6W--tW6H2FskmjrZEIdnjS6_rFhUgThxC4PtOrP94RJWv2GUskJW9W-bmT7aCJIuUutyqBpIHK8QUaUTbH2H5pyv18RaD6wocpBts-oDYOClC9CNX0RKhRWLV7wS91ezIU0K59Db5KceYiSDB3X_QwVd7kqptSYha6c4e_ZTH5WT368orFaVPZ40_bQ7dBuif4hvIa-y5AgaN602gkiOwtX17oauPx5Q"
+                }
+              })
+                .then((response) => response.json())
+            .then((json) => console.log(json)); */}}]
+          };
+          //console.log(a)
+          
+          Object.keys(cn).forEach(function(key) {
+          cc.push({title:String(cn[key]),field:String(cn[key]),maxWidth:205,minWidth:80});});
+          
+          var table = new Tabulator(ide, {
+          data:a,
+          columns: cc,
+          dataTree: rr, 
+          selectableRows: 1,
+          clipboard:"true",
+          copyToClipboard:"selected",
+          layout:"fitDataTable"});
+          table.on("rowClick",function(e, row){
+            row.select();
+            var rowData = row.getData("data");
+          /*if (rowData['CatalogNumber'] != undefined){
+            t1=tidy(df, filter((d) => d['CatalogNumber'] === rowData['CatalogNumber']))
+            pn=rowData['CatalogNumber']
+          } else {
+          t1=tidy(df, filter((d) => d[ph1] === rowData[ph1]))
+          pn=rowData[ph1]
+          }*/
+          if (rowData[rl] != undefined){
+            t1=tidy(df, filter((d) => d[rl] === rowData[rl]))
+            pn=rowData[rl]
+            document.getElementById('ctitle').classList.remove("label","left","pointing");
+            document.getElementById('ctitle').classList.add("center","aligned","header");
+            document.getElementById('ctitle').innerHTML=pn;
+        var myChart = echarts.init(document.getElementById('myChart'),null,{renderer:'svg'});
+        var option;
+        option = {
+        //title: {text: pn,left:'center'},
+        tooltip: {order: 'valueDesc',trigger: 'axis',valueFormatter: (value) => Math.round (value)},
+        grid: {top: 30,bottom:90},
+        legend: {bottom: 11},
+        xAxis: {
+          type:'time',
+          axisLabel: {
+        formatter: '{MMM} {yy}'
+        },
+          
+        },
+        yAxis: {type: 'value'},
+        series: [
+          {
+            name: '`Act Orders Rev',
+            type: 'line',
+            data: tidy(t1, groupBy('SALES_DATE',summarize({order:sum('`Act Orders Rev')}))).map(row=>[row.SALES_DATE,row.order])
+          },
+          {
+            name: '`Fcst DF Final Rev',
+            type: 'line',
+            data: tidy(t1, groupBy('SALES_DATE',summarize({order:sum('`Fcst DF Final Rev')}))).filter((d) => d.SALES_DATE > lmd).map(row=>[row.SALES_DATE,row.order]),
+            lineStyle: {color: '#5ba339'},
+            itemStyle: {color: '#5ba339'}
+          },
+          {
+            name: '`Fcst Stat Final Rev',
+            type: 'line',
+            data: tidy(t1, groupBy('SALES_DATE',summarize({order:sum('`Fcst Stat Final Rev')}))).filter((d) => d.SALES_DATE > lmd).map(row=>[row.SALES_DATE,row.order]),
+            lineStyle: {color: '#d63333'},
+            itemStyle: {color: '#d63333'}
+          },
+          {
+            name: 'L2 Stat Final Rev',
+            type: 'line',
+            data: tidy(tidy(t1, filter((d) => d['SALES_DATE'] <= lmd)), groupBy('SALES_DATE',summarize({order:sum('L2 Stat Final Rev')}))).map(row=>[row.SALES_DATE,row.order]),
+            lineStyle: {color: '#ee6666'},
+            itemStyle: {color: '#ee6666'}
+          },
+          {
+            name: 'L2 DF Final Rev',
+            type: 'line',
+            data: tidy(tidy(t1, filter((d) => d['SALES_DATE'] <= lmd)), groupBy('SALES_DATE',summarize({order:sum('L2 DF Final Rev')}))).map(row=>[row.SALES_DATE,row.order]),
+            lineStyle: {color: '#91cc75'},
+            itemStyle: {color: '#91cc75'}
+          }
+        ]
+      }};
+      window.addEventListener('resize', function() {myChart.resize();});
+      option && myChart.setOption(option);
+      })};
+
+tdff({{jdf2|safe}},{{sc2|safe}},"#table1");
+tdff({{jdf3|safe}},{{sc3|safe}},"#table2");
+tdff({{jdf4|safe}},{{sc4|safe}},"#table3");
+tdff({{jdf5|safe}},{{sc5|safe}},"#table4");
+tdff({{jdf6|safe}},{{sc6|safe}},"#table5");
+tdff({{jdf7|safe}},{{sc7|safe}},"#table7");
+tdff({{fdf|safe}},{{fcol|safe}},"#table8");
+var navItems = jQuery('a.item');
+var items = jQuery('.mitem');
+var win = jQuery(window);
+win.scroll(function(e){
+    jQuery.each(items, function(key, value){
+        var item = jQuery(value);
+        if(win.scrollTop() >= item.offset().top-275){
+            jQuery('a.active').removeClass('active');
+            var id = item.attr('id');
+
+            jQuery.each(navItems, function(key, value){
+                var navItem = jQuery(value);
+                if(navItem.attr('href') == '#'+id) navItem.addClass('active');
+            });
+        }
+    });
+});
+      </script>
+      </body>
+</html>

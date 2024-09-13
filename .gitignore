@@ -1,0 +1,254 @@
+archive/aiutils-v1.py
+archive/aiutils-v2.py
+archive/aiutils-v3.py
+archive/aiutils-v4.py
+archive/aiutils-v5.py
+archive/aiutils-v6.py
+archive/aiutils-v7.py
+archive/aiutils-v8.py
+archive/autoinsights-v1.py
+archive/autoinsights-v2.py
+archive/autoinsights-v3.py
+archive/autoinsights-v4.py
+archive/autoinsights-v5.py
+archive/autoinsights-v6.py
+archive/autoinsights-v7.py
+archive/automatedinsights-v1.py
+archive/automatedinsights.py
+archive/mapping1.xlsx
+archive/my_new_file.html
+archive/requirements-bak.txt
+archive/test-chartjs-v3.html
+archive/test-v1.html
+archive/test-v2 semantic.html
+archive/urban_theme.py
+archive/insights/Analytics-master.html
+archive/insights/AUSTRALIA-Trauma and Extremities.html
+archive/insights/AutomatedInsights TE.html
+archive/insights/AutomatedInsights-India1.html
+archive/insights/AutomatedInsights-IS.html
+archive/insights/AutomatedInsights-OI.html
+archive/insights/AutomatedInsights-old.html
+archive/insights/AutomatedInsights-SSP-v3.html
+archive/insights/AutomatedInsights.html
+archive/insights/GSA-Trauma and Extremities.html
+archive/insights/INDIA-CMF.html
+archive/insights/INDIA-Endoscopy.html
+archive/insights/INDIA-Instruments.html
+archive/insights/INDIA-Joint Replacement (2).html
+archive/insights/INDIA-Joint Replacement (3).html
+archive/insights/INDIA-Joint Replacement.html
+archive/insights/INDIA-Trauma and Extremities.html
+archive/insights/JAPAN-Instruments (2).html
+archive/insights/Japan-Instruments.html
+archive/insights/JAPAN-Joint Replacement.html
+archive/insights/JAPAN-Trauma and Extremities.html
+archive/insights/South Pacific-CMF (2).html
+archive/insights/South Pacific-CMF.html
+archive/insights/South Pacific-Endoscopy.html
+archive/insights/South Pacific-Instruments (2).html
+archive/insights/South Pacific-Instruments.html
+archive/insights/South Pacific-Joint Replacement-1.html
+archive/insights/South Pacific-Joint Replacement.html
+archive/insights/South Pacific-Trauma and Extremities (2).html
+archive/insights/South Pacific-Trauma and Extremities (3).html
+archive/insights/South Pacific-Trauma and Extremities-1.html
+archive/insights/South Pacific-Trauma and Extremities.html
+archive/insights/test-v1.html
+archive/insights/test-v2.html
+archive/insights/test.html
+archive/insights/UNITED STATES-CMF (2).html
+archive/insights/UNITED STATES-CMF.html
+archive/insights/UNITED STATES-ENT.html
+archive/insights/UNITED STATES-Foot and Ankle.html
+archive/insights/UNITED STATES-Interventional Spine (2).html
+archive/insights/UNITED STATES-Interventional Spine.html
+archive/insights/UNITED STATES-Neurosurgical (2).html
+archive/insights/UNITED STATES-Neurosurgical.html
+archive/insights/UNITED STATES-Orthopaedic Instruments.html
+archive/insights/UNITED STATES-Surgical Technologies.html
+archive/insights/UNITED STATES-Trauma.html
+archive/insights/US Instru Neurosurgical.html
+reports/\['EEMEA Other', 'France', 'GSA', 'MENA']-Neurovascular.html
+reports/\['EEMEA Others', 'France', 'GSA', 'MENA']-Neurovascular.html
+reports/APAC,CANADA,LATIN AMERICA,UNITED STATES-Neurovascular.html
+reports/APAC,EEMEA,EUROPE,CANADA,LATIN AMERICA,UNITED STATES-Neurovascular.html
+reports/ARGENTINA-Endoscopy.html
+reports/ARGENTINA-Instruments.html
+reports/ARGENTINA-Joint Replacement.html
+reports/ARGENTINA-Medical.html
+reports/ARGENTINA-Neurovascular.html
+reports/ARGENTINA-Spine.html
+reports/ARGENTINA-Trauma and Extremities.html
+reports/ASEAN-Instruments.html
+reports/BRAZIL-Endoscopy.html
+reports/BRAZIL-Instruments.html
+reports/BRAZIL-Joint Replacement.html
+reports/BRAZIL-Medical.html
+reports/BRAZIL-Neurovascular.html
+reports/BRAZIL-Spine.html
+reports/BRAZIL-Trauma and Extremities.html
+reports/CANADA-CMF.html
+reports/CANADA-Endoscopy.html
+reports/CANADA-Instruments.html
+reports/CANADA-Joint Replacement.html
+reports/CANADA-Medical.html
+reports/CANADA-Neurovascular.html
+reports/CANADA-Spine.html
+reports/CANADA-Sustainability Solutions.html
+reports/CANADA-Trauma and Extremities.html
+reports/CHILE-Endoscopy.html
+reports/CHILE-Instruments.html
+reports/CHILE-Joint Replacement.html
+reports/CHILE-Medical.html
+reports/CHILE-Neurovascular.html
+reports/CHILE-Spine.html
+reports/CHILE-Trauma and Extremities.html
+reports/CHINA-\['Instruments', 'Endoscopy', 'Trauma and Extremities', 'Joint Replacement'].html
+reports/CHINA-CMF.html
+reports/CHINA-Endoscopy.html
+reports/CHINA-Instruments.html
+reports/CHINA-Joint Replacement.html
+reports/CHINA-Neurovascular.html
+reports/CHINA-Trauma and Extremities.html
+reports/COLOMBIA-Endoscopy.html
+reports/COLOMBIA-Instruments.html
+reports/COLOMBIA-Joint Replacement.html
+reports/COLOMBIA-Medical.html
+reports/COLOMBIA-Neurovascular.html
+reports/COLOMBIA-Spine.html
+reports/COLOMBIA-Trauma and Extremities.html
+reports/East Asia-CMF.html
+reports/East Asia-Endoscopy.html
+reports/East Asia-Instruments.html
+reports/East Asia-Joint Replacement.html
+reports/East Asia-Trauma and Extremities.html
+reports/EUROPE-\['AC_Patient Care', 'AC_Patient Handling', 'EC_Transport', 'EC_Treatment'].html
+reports/EUROPE-AC_Patient Care,AC_Patient Handling,EC_Transport,EC_Treatment,Patient Care,Patient Care,Physio Control.html
+reports/EUROPE-CMF.html
+reports/EUROPE-Endoscopy.html
+reports/EUROPE-ENT.html
+reports/EUROPE-Foot and Ankle.html
+reports/EUROPE-Instruments.html
+reports/EUROPE-IVS,CMF.html
+reports/EUROPE-IVS.html
+reports/EUROPE-Joint Replacement.html
+reports/EUROPE-NSE.html
+reports/EUROPE-Orthopaedic Instruments,Surgical Technologies,NSE,ENT.html
+reports/EUROPE-Orthopaedic Instruments.html
+reports/EUROPE-Platform Screws.html
+reports/EUROPE-Sage.html
+reports/EUROPE-Spine.html
+reports/EUROPE-Surgical Technologies.html
+reports/EUROPE-Trauma and Extremities.html
+reports/EUROPE-Trauma,Platform Screws.html
+reports/EUROPE-Trauma.html
+reports/EUROPE-Upper Extremities.html
+reports/GSA-Instruments.html
+reports/GSA-Trauma and Extremities.html
+reports/HONG KONG-CMF.html
+reports/HONG KONG-Endoscopy.html
+reports/HONG KONG-Instruments.html
+reports/HONG KONG-Joint Replacement.html
+reports/HONG KONG-Trauma and Extremities.html
+reports/INDIA-Instruments.html
+reports/INDIA-Joint Replacement.html
+reports/INDIA-Neurovascular.html
+reports/JAPAN-Instruments.html
+reports/JAPAN-Joint Replacement.html
+reports/JAPAN-Neurovascular.html
+reports/KOREA-CMF.html
+reports/KOREA-Endoscopy.html
+reports/KOREA-Instruments.html
+reports/Korea-Joint Replacement.html
+reports/Korea-Neurovascular.html
+reports/KOREA-Trauma and Extremities.html
+reports/LATIN AMERICA-Endoscopy.html
+reports/LATIN AMERICA-Instruments.html
+reports/LATIN AMERICA-Joint Replacement.html
+reports/LATIN AMERICA-Medical.html
+reports/LATIN AMERICA-Spine.html
+reports/LATIN AMERICA-Trauma and Extremities.html
+reports/MALAYSIA-CMF.html
+reports/MALAYSIA-Endoscopy.html
+reports/MALAYSIA-Instruments.html
+reports/MALAYSIA-Joint Replacement.html
+reports/MALAYSIA-Trauma and Extremities.html
+reports/MEXICO-Endoscopy.html
+reports/MEXICO-Instruments.html
+reports/MEXICO-Joint Replacement.html
+reports/MEXICO-Medical.html
+reports/MEXICO-Neurovascular.html
+reports/MEXICO-Spine.html
+reports/MEXICO-Trauma and Extremities.html
+reports/PUERTO RICO-Endoscopy.html
+reports/PUERTO RICO-Instruments.html
+reports/PUERTO RICO-Joint Replacement.html
+reports/PUERTO RICO-Medical.html
+reports/PUERTO RICO-Spine.html
+reports/PUERTO RICO-Trauma and Extremities.html
+reports/SINGAPORE-CMF.html
+reports/SINGAPORE-Endoscopy.html
+reports/SINGAPORE-Instruments.html
+reports/SINGAPORE-Joint Replacement.html
+reports/SINGAPORE-Trauma and Extremities.html
+reports/South Pacific-Instruments.html
+reports/South Pacific-Joint Replacement.html
+reports/South Pacific-Neurovascular.html
+reports/South Pacific-Trauma and Extremities.html
+reports/THAILAND-CMF.html
+reports/THAILAND-Endoscopy.html
+reports/THAILAND-Instruments.html
+reports/THAILAND-Joint Replacement.html
+reports/THAILAND-Trauma and Extremities.html
+reports/UNITED STATES-\['002-SB Power Tools', 'LB Cut Access', 'LB Power Tools', 'MB POWER TOOLS'].html
+reports/UNITED STATES-\['Cement Systems', 'Detergents', 'Irrigation', 'Skin Closure'].html
+reports/UNITED STATES-002-SB Power Tools,LB Cut Access,LB Power Tools,MB POWER TOOLS,Ortho AGT,S.T.I.C.,SB Cut Access,SB Power Tools,STERILIZATION,Sterishield,Surgical Other.html
+reports/UNITED STATES-AC_Patient Care.html
+reports/UNITED STATES-AC_Patient Handling.html
+reports/UNITED STATES-ANCHORAGE PLATING.html
+reports/UNITED STATES-Bilologics.html
+reports/UNITED STATES-BIOFOAM.html
+reports/UNITED STATES-Biologics.html
+reports/UNITED STATES-Cement Systems,Detergents,Irrigation,Skin Closure,Tourniquet.html
+reports/UNITED STATES-CITRELOCK.html
+reports/UNITED STATES-CMF.html
+reports/UNITED STATES-CROSSCHECK 3DI.html
+reports/UNITED STATES-EC_Transport.html
+reports/UNITED STATES-EC_Treatment.html
+reports/UNITED STATES-ENDOTRAC.html
+reports/UNITED STATES-ENT.html
+reports/UNITED STATES-Foot and Ankle.html
+reports/UNITED STATES-FUTURA CSI.html
+reports/UNITED STATES-Instruments.html
+reports/UNITED STATES-Interventional Spine.html
+reports/UNITED STATES-Medical.html
+reports/UNITED STATES-MINI MAXLOCK EXTREME ISO PLATE.html
+reports/UNITED STATES-MINI MAXLOCK EXTREME SCREWS AN.html
+reports/UNITED STATES-Neurosurgical.html
+reports/UNITED STATES-Neurovascular.html
+reports/UNITED STATES-ORTHOLOC 2 LAPIFUSE.html
+reports/UNITED STATES-ORTHOLOC 3DI ANKLE FX LP.html
+reports/UNITED STATES-ORTHOLOC 3DI ANKLE FX.html
+reports/UNITED STATES-ORTHOLOC 3DI FLATFOOT.html
+reports/UNITED STATES-ORTHOLOC 3DI HALLUX.html
+reports/UNITED STATES-ORTHOLOC 3DI MIDFOOT.html
+reports/UNITED STATES-ORTHOLOC 3DI OTHER.html
+reports/UNITED STATES-ORTHOLOC 3DI SMALL BONE.html
+reports/UNITED STATES-ORTHOLOC CALC FX.html
+reports/UNITED STATES-Orthopaedic Instruments.html
+reports/UNITED STATES-Sage.html
+reports/UNITED STATES-SMALL BONES OTHER.html
+reports/UNITED STATES-SONICFUSION.html
+reports/UNITED STATES-Surgical Technologies.html
+reports/UNITED STATES-Sustainability Solutions.html
+reports/UNITED STATES-SYNDESMOSIS.html
+reports/UNITED STATES-Trauma.html
+reports/UNITED STATES-Upper Extremities.html
+reports/UNITED STATES-VARIAX FOOT PLATES.html
+reports/UNITED STATES,LATIN AMERICA,EUROPE,EEMEA,EUROPE,APAC,CANADA-Neurovascular.html
+archive/versions.txt
+__pycache__/autoinsights.cpython-311.pyc
+__pycache__/autoinsights.cpython-312.pyc
+__pycache__/autoinsights1.cpython-312.pyc
+__pycache__/theme.cpython-312.pyc
