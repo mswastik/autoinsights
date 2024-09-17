@@ -5,7 +5,7 @@ import os
 import io
 import altair as alt
 import base64
-from datetime import datetime, date
+from datetime import datetime #, date
 
 today=datetime.today().replace(day=1)
 alt.themes.enable('powerbi')
@@ -55,8 +55,8 @@ for sfn in maf['Filename'].unique():
       ht=f'''<!DOCTYPE html>
          <html>
          <body style="font-family: 'Lato','Calibri','Arial', Times, serif,'Courier New', Courier, monospace;">
-               <div style="display: flex; background-color: #85458A; height: 55px; text-align:center; margin-bottom:0px; padding-bottom:0px;"><h1 style="color: white;font-family:Arial;">Planning Advisor for</h1></br>
-                <h1><p style="color:#FFCC33; margin-bottom:0px;">{i['Location Value']} {i['Product Value']}</p></h1>
+               <div style="display: flex; background-color: #85458A; height: 55px; text-align:center; margin-bottom:0px; padding-bottom:0px;"><h1 style="color: white;font-family:Arial;">Planning Advisor for</br>
+                <p style="color:#FFCC33; margin-bottom:0px;">{i['Location Value']} {i['Product Value']}</p></h1>
                <table style="width:100%" align="center" cellspacing="0" cellpadding="0" ; margin-top:0px; padding-top:-2px;>
                <colgroup>
                      <col span="1" style="width: 3%;">

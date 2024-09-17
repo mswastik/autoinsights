@@ -2,12 +2,10 @@ import polars as pl
 import altair as alt
 from datetime import datetime, date
 from dateutil.relativedelta import relativedelta
-#import warnings
 from theme import theme
 from jinja2 import Template
 
 alt.data_transformers.disable_max_rows()
-#warnings.filterwarnings('ignore')
 
 today=datetime.today().replace(day=1)
 #period = datetime.strptime('01-12-2023','%d-%m-%Y')
@@ -198,15 +196,15 @@ def genai(loch,loc,prodh,prod,df,uom,shead,lhead,rl):
 
     #cd=cd.with_columns(SALES_DATE=pl.col('SALES_DATE').cast(pl.String))
     #print(cd)
-    bb=alt.Chart(cd).encode(x=alt.X('ActwFC:Q'),y=ph,yOffset="SALES_DATE:N",text=alt.Text('YoY growth:N',format=".0%"))
-    bb1=(bb.mark_bar().encode(color=alt.Color('SALES_DATE:N',title=''))+bb.mark_text(fontSize=10,dx=17)).configure(**theme).configure_axis(titleColor= "#555", titleFontSize=13).configure_axisX(labelFontSize=11).properties(width=230,height=215)   #Growth
-    bb3b=alt.Chart(ib1.filter(pl.col('FVA')<-0.009)[:5].to_pandas()).encode(x=alt.X('FVA:Q',axis=alt.Axis(format=".0%")),y=alt.Y(ph,axis=alt.Axis(orient='right')),text=alt.Text('FVA',format='.0%')).properties(width=260,height=160)    #FVA
+    bb=alt.Chart(cd).encode(x=alt.X('ActwFC:Q'),y=ph,yOffset="SALES_DATE:N",text=alt.Text('YoY growth:N',format=".0%"),color=alt.Color('SALES_DATE:N',title=''))
+    bb1=(bb.mark_bar()+bb.mark_text(fontSize=10,dx=17)).configure(**theme).configure_axis(titleColor= "#555", titleFontSize=13).configure_axisX(labelFontSize=11).properties(width=230,height=215)   #Growth
+    bb3b=alt.Chart(ib1.filter(pl.col('FVA')<-0.009)[:5]).encode(x=alt.X('FVA:Q',axis=alt.Axis(format=".0%")),y=alt.Y(ph,axis=alt.Axis(orient='right')),text=alt.Text('FVA',format='.0%')).properties(width=260,height=160)    #FVA
     bb3=(bb3b.mark_bar()+bb3b.mark_text(fontSize=10,dx=-18)).configure(**theme).configure_axis(titleColor= "#555", titleFontSize=13).configure_axisX(labelFontSize=11)
-    bb2a=alt.Chart(ib1.filter(pl.col('Bias')<=-.1)[:5].to_pandas()).encode(x=alt.X('Bias:Q',axis=alt.Axis(format=".0%")),y=alt.Y(ph,axis=alt.Axis(orient='right')),text=alt.Text('Bias',format='.0%')).properties(width=210,height=160)  #-ve Bias
+    bb2a=alt.Chart(ib1.filter(pl.col('Bias')<=-.1)[:5]).encode(x=alt.X('Bias:Q',axis=alt.Axis(format=".0%")),y=alt.Y(ph,axis=alt.Axis(orient='right')),text=alt.Text('Bias',format='.0%')).properties(width=210,height=160)  #-ve Bias
     bb2=(bb2a.mark_bar()+bb2a.mark_text(fontSize=10,dx=-18)).configure(**theme).configure_axis(titleColor= "#555", titleFontSize=12).configure_axisX(labelFontSize=11)
-    bb2c=alt.Chart(ib1.filter(pl.col('Bias')>=.1)[:5].to_pandas()).encode(x=alt.X('Bias:Q',axis=alt.Axis(format=".0%")),y=ph,text=alt.Text('Bias',format='.0%')).properties(width=210,height=160)   #+ve Bias
+    bb2c=alt.Chart(ib1.filter(pl.col('Bias')>=.1)[:5]).encode(x=alt.X('Bias:Q',axis=alt.Axis(format=".0%")),y=ph,text=alt.Text('Bias',format='.0%')).properties(width=210,height=160)   #+ve Bias
     bb2b=(bb2c.mark_bar()+bb2c.mark_text(fontSize=10,dx=18)).configure(**theme).configure_axis(titleColor= "#555", titleFontSize=12).configure_axisX(labelFontSize=11)
-    bb4b=alt.Chart(tmi.to_pandas()).mark_bar().encode(x=alt.X('% Contribution:Q',axis=alt.Axis(format=".2%")),y=alt.Y(ph).sort('-x'),text=alt.Text('% Contribution:Q',format=".2%"),yOffset='variable').properties(width=230,height=200)
+    bb4b=alt.Chart(tmi).mark_bar().encode(x=alt.X('% Contribution:Q',axis=alt.Axis(format=".2%")),y=alt.Y(ph).sort('-x'),text=alt.Text('% Contribution:Q',format=".2%"),yOffset='variable').properties(width=230,height=200)
     bb4=(bb4b.mark_bar().encode(color=alt.Color('variable',title=''))+bb4b.mark_text(fontSize=10,dx=18)).configure(**theme).configure_axis(titleColor= "#555", titleFontSize=12).configure_axisX(labelFontSize=11)    #Contribution
 
     jinja2_template_string = open("C:\\Users\\smishra14\\OneDrive - Stryker\\python\\autoinsights\\test-supa.html", 'r').read()

@@ -2,3 +2,4 @@ altair
 jinja2
 polars
 pywin32
+fastexcel
