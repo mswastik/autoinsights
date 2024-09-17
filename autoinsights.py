@@ -209,7 +209,7 @@ def genai(loch,loc,prodh,prod,df,uom,shead,lhead,rl):
     bb4b=alt.Chart(tmi.to_pandas()).mark_bar().encode(x=alt.X('% Contribution:Q',axis=alt.Axis(format=".2%")),y=alt.Y(ph).sort('-x'),text=alt.Text('% Contribution:Q',format=".2%"),yOffset='variable').properties(width=230,height=200)
     bb4=(bb4b.mark_bar().encode(color=alt.Color('variable',title=''))+bb4b.mark_text(fontSize=10,dx=18)).configure(**theme).configure_axis(titleColor= "#555", titleFontSize=12).configure_axisX(labelFontSize=11)    #Contribution
 
-    jinja2_template_string = open("C:\\Users\\smishra14\\OneDrive - Stryker\\python\\autoinsights\\test.html", 'r').read()
+    jinja2_template_string = open("C:\\Users\\smishra14\\OneDrive - Stryker\\python\\autoinsights\\test-supa.html", 'r').read()
     template = Template(jinja2_template_string)
 
     edf2['L2 DF Acc']=edf2['L2 DF Acc'].map('{:,.1%}'.format)

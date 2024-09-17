@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+  <title>{{loc}} - {{prod}}</title>
+    <head>
+      <link href="https://unpkg.com/tabulator-tables@5.6.1/dist/css/tabulator.min.css" rel="stylesheet">
+      <link href="https://unpkg.com/tabulator-tables@5.6.1/dist/css/tabulator_semanticui.min.css" rel="stylesheet">
+      <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/fomantic-ui@2.9.3/dist/semantic.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+        <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+        <script src="https://d3js.org/d3-array.v2.min.js"></script>
+        <script src="https://www.unpkg.com/@tidyjs/tidy/dist/umd/tidy.min.js"></script>
+        <script type="text/javascript" src="https://unpkg.com/tabulator-tables@5.6.1/dist/js/tabulator.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/fomantic-ui@2.9.3/dist/semantic.min.js"></script>
+    </head>
+    <style>
+      .item {
+        width: 97px;
+        height: 50px;
+        transition: all 2s;
+      }
+    </style>
+    <body>
+      <div class="ui top fixed sticky row grid segment" style="width:100%;height:4em;padding-top:0px;margin-top:-6px;margin-bottom: 0px;padding-bottom: 0px;padding-left:10px ;background-color:white; white-space: nowrap;">
+      <h1 class="ui header column"><span style="color:#FFCC33; white-space: nowrap;"><b>Planning Advisor</b></span> for {{loc}} - {{prod}}</h1><p class="ui right floated column">{{today}}</p></div>
+      <div class="ui grid" style="margin-top: 50px;">
+      <div class="ui one wide column">
+        <div class="ui inverted vertical menu" style="position: sticky; top:120px;max-width: 97px;">
+        <a class="item blue" id="tt1" href="#td1" >Growth</a>
+        <a class="item violet" id="tt2" href="#td2" >FVA</a>
+        <a class="item purple" href="#td3" >-ve Bias</a>
+        <a class="item purple" href="#td4">+ve Bias</a>
+        <a class="item pink" href="#td5">Error Increase</a>
+        <a class="item pink" href="#td7">Error Contributor</a>
+        <a class="item green" href="#td8">Fidelity</a>
+      </div></div>
+        <div class="ui nine wide column" id="cont">
+            <div class="ui segment mitem" id="td1"><h2 style="margin-top:30px;"><span style='color:#FFCC33'>YoY</span> Change vs LY</h2>
+              <p>Brands with high difference in next year growth compared to this year's growth</p>
+              <!-- <button class="ui btn" onclick="">Download</button>-->
+            <div class="ui striped celled very compact" id="table1"></div></div>
+            <div class="ui segment mitem" id="td2"><h2 style="margin-top:30px;"><span style='color:#FFCC33'>Top</span> -ve FVA</h2>
+              <p>Top Error contributors with -FVA (Stat Accu. > DF Accu) in last 3 months</p>
+            <div class="ui striped celled very compact" id="table2"></div></div>
+            <div class="ui segment mitem" id="td3"><h2 style="margin-top:30px;"><span style='color:#FFCC33'>Top</span> -ve 3M DF Bias</h2>
+              <p>Top Error contributors with high negative Bias in last 3 months</p>
+            <div class="ui striped celled very compact" id="table3"></div></div>
+            <div class="ui segment mitem" id="td4"><h2 style="margin-top:30px;"><span style='color:#FFCC33'>High</span> +ve 3M DF Bias</h2>
+              <p>Top Error contributors with high positive Bias in last 3 months</p>
+            <div class="ui striped celled very compact" id="table4"></div></div>
+            <div class="ui segment mitem" id="td5"><h2 style="margin-top:30px;"><span style='color:#FFCC33'>Maximum</span> Err Increase</h2>
+              <p>Items which saw maximum increase in error last month </p>
+            <div class="ui striped celled very compact" id="table5"></div></div>
+            <div class="ui segment mitem" id="td7"><h2 style="margin-top:30px;"><span style='color:#FFCC33'>High</span> Err Contributor</h2>
+              <p>Items where Error Contribution is higher than Order Contribution in last 3 months</p>
+            <div class="ui striped celled very compact" id="table7"></div></div>
+            <div class="ui segment mitem" id="td8"><h2 style="margin-top:30px;"><span style='color:#FFCC33'>High</span> Fidelity Items</h2>
+              <p>Items where changes between L0 and L1 is high</p>
+            <div class="ui striped celled very compact" id="table8"></div></div>
+          </div>
+        <div id="chd" class="ui segment six wide column" style="max-height: 450px;position: sticky;top: 55px;">
+          <div class="ui left pointing label" style="margin-bottom: 10px;" id="ctitle">Select any {{rl|safe}} to view its trend</div>
+          <div id="myChart" style="width: 100%; height: 100%;"></div></div>
+          </div>
+      <script>
+        console.log({{today|tojson}})
+        const { createClient } = supabase
+        const _supabase = createClient('https://dkhazkhfoavuuwfanlif.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRraGF6a2hmb2F2dXV3ZmFubGlmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjYyNzg4MDYsImV4cCI6MjA0MTg1NDgwNn0.eMBd7llKoaVoWg9_9gOg6ISGdp_Nxe1w0-00TMRcuFY');
+        //var today = new Date({{today|tojson}});
+        //var lmd = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+        var lmd = new Date({{today|tojson}});
+        console.log(lmd);
+        //console.log({{rl}});
+        rl={{rl|tojson}}
+        //rl=rl.trim()
+        const { tidy, mutate, arrange, desc, summarize, sum, groupBy, select,filter,distinct } = Tidy;
+        df={{jdf|safe}};
+        ph1={{ph1|tojson}}
+        var copyIcon = function(cell, formatterParams){return "<i class='copy outline icon'></i>";};
+        mon=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        df=tidy(df,mutate({'SALES_DATE': (d) => new Date(d['SALES_DATE'])}));
+        //df=tidy(df,mutate({'SALES_DATE':(d) => `${mon[d['SALES_DATE'].getMonth()]}-${String(d['SALES_DATE'].getFullYear()).slice(2,4)}`}));
+        async function tdff(tdf,cn,ide) {
+          if (ide=="#table1") {
+            rr=true
+            a=tdf.filter((d) => d.Measure =='YoY growth')
+            y=tdf.filter((d) => d.Measure =='ActwFC')
+            Object.keys(a).forEach(function(r) { a[r]['_children']=[]; a[r]['_children']=y[r] })
+            var cc=[] 
+          } else {
+            rr=false
+            a=tdf
+            var cc =[{formatter:copyIcon, width:40, hozAlign:"center", cellClick: async function (e, cell) {
+            ct=cell.getRow().getData()[rl]
+            navigator.clipboard.writeText(ct);
+            $.toast({class: 'success',position: 'top center',message: "Copied : " + ct});     
+            async function ind1(cell) {const { error } = await _supabase.from('apa').insert([{ type:"copy",catalognumber:cell.getRow().getData().CatalogNumber,title:document.title },]);
+                console.log(cell);}
+            ind1(cell)
+          }}]
+          };
+          //console.log(a)
+          
+          Object.keys(cn).forEach(async function(key) {
+          cc.push({title:String(cn[key]),field:String(cn[key]),maxWidth:205,minWidth:80});});
+          
+          var table = new Tabulator(ide, {
+          data:a,
+          columns: cc,
+          dataTree: rr, 
+          selectableRows: 1,
+          clipboard:"true",
+          copyToClipboard:"selected",
+          layout:"fitDataTable"});
+          table.on("rowClick",async function(e, row){
+            row.select();
+            var rowData = row.getData("data");
+            
+          if (rowData[rl] != undefined){
+            t1=tidy(df, filter((d) => d[rl] === rowData[rl]))
+            pn=rowData[rl]
+            document.getElementById('ctitle').classList.remove("label","left","pointing");
+            document.getElementById('ctitle').classList.add("center","aligned","header");
+            document.getElementById('ctitle').innerHTML=pn;
+        var myChart = echarts.init(document.getElementById('myChart'),null,{renderer:'svg'});
+        var option;
+        option = {
+        //title: {text: pn,left:'center'},
+        tooltip: {order: 'valueDesc',trigger: 'axis',valueFormatter: (value) => Math.round (value)},
+        grid: {top: 30,bottom:90},
+        legend: {bottom: 11},
+        xAxis: {
+          type:'time',
+          axisLabel: {
+        formatter: '{MMM} {yy}'
+        },
+          
+        },
+        yAxis: {type: 'value'},
+        series: [
+          {
+            name: '`Act Orders Rev',
+            type: 'line',
+            data: tidy(t1, groupBy('SALES_DATE',summarize({order:sum('`Act Orders Rev')}))).map(row=>[row.SALES_DATE,row.order])
+          },
+          {
+            name: '`Fcst DF Final Rev',
+            type: 'line',
+            data: tidy(t1, groupBy('SALES_DATE',summarize({order:sum('`Fcst DF Final Rev')}))).filter((d) => d.SALES_DATE > lmd).map(row=>[row.SALES_DATE,row.order]),
+            lineStyle: {color: '#5ba339'},
+            itemStyle: {color: '#5ba339'}
+          },
+          {
+            name: '`Fcst Stat Final Rev',
+            type: 'line',
+            data: tidy(t1, groupBy('SALES_DATE',summarize({order:sum('`Fcst Stat Final Rev')}))).filter((d) => d.SALES_DATE > lmd).map(row=>[row.SALES_DATE,row.order]),
+            lineStyle: {color: '#d63333'},
+            itemStyle: {color: '#d63333'}
+          },
+          {
+            name: 'L2 Stat Final Rev',
+            type: 'line',
+            data: tidy(tidy(t1, filter((d) => d['SALES_DATE'] <= lmd)), groupBy('SALES_DATE',summarize({order:sum('L2 Stat Final Rev')}))).map(row=>[row.SALES_DATE,row.order]),
+            lineStyle: {color: '#ee6666'},
+            itemStyle: {color: '#ee6666'}
+          },
+          {
+            name: 'L2 DF Final Rev',
+            type: 'line',
+            data: tidy(tidy(t1, filter((d) => d['SALES_DATE'] <= lmd)), groupBy('SALES_DATE',summarize({order:sum('L2 DF Final Rev')}))).map(row=>[row.SALES_DATE,row.order]),
+            lineStyle: {color: '#91cc75'},
+            itemStyle: {color: '#91cc75'}
+          }
+        ]}
+       async function ind(row) {const { error } = await _supabase
+              .from('apa')
+              .insert([
+              { type:"click",catalognumber:row.getData().CatalogNumber,title:document.title },]);}
+       ind(row);
+    };
+      window.addEventListener('resize', function() {myChart.resize();});
+      option && myChart.setOption(option);
+    })};
+
+tdff({{jdf2|safe}},{{sc2|safe}},"#table1");
+tdff({{jdf3|safe}},{{sc3|safe}},"#table2");
+tdff({{jdf4|safe}},{{sc4|safe}},"#table3");
+tdff({{jdf5|safe}},{{sc5|safe}},"#table4");
+tdff({{jdf6|safe}},{{sc6|safe}},"#table5");
+tdff({{jdf7|safe}},{{sc7|safe}},"#table7");
+tdff({{fdf|safe}},{{fcol|safe}},"#table8");
+var navItems = jQuery('a.item');
+var items = jQuery('.mitem');
+var win = jQuery(window);
+win.scroll(function(e){
+    jQuery.each(items, function(key, value){
+        var item = jQuery(value);
+        if(win.scrollTop() >= item.offset().top-275){
+            jQuery('a.active').removeClass('active');
+            var id = item.attr('id');
+
+            jQuery.each(navItems, function(key, value){
+                var navItem = jQuery(value);
+                if(navItem.attr('href') == '#'+id) navItem.addClass('active');
+            });
+        }
+    });
+});
+      </script>
+      </body>
+</html>
