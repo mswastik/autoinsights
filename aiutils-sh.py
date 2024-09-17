@@ -65,22 +65,27 @@ for sfn in maf['Filename'].unique():
                <td style="padding-left: 15px;font:1.3em; border:none;"> Brands with high difference in next year's growth compared to this year's growth </td>
                <td style="padding-left: 15px;border:none;" colspan="1"><img src="data:image/png;base64,{base64.b64encode(buf1.getvalue()).decode()} style="max-width:480px;"</img></td>
                </tr>
+               <tr style="width:100%; height:2px; border:1px solid #111; padding-left:15px;"> <td colspan="2"></td></tr>
                <tr style="width:100%; padding-bottom:5px;border-bottom: 1px solid #111;">
                <td style="padding-left: 15px; font:1.3em; border:none;" colspan="1">Negative FVA (Stat Accu. > DF Accu) brands with high error contribution</td>
                <td style="padding-left: 15px; border:none;" colspan="1"><img src="data:image/png;base64,{base64.b64encode(buf3.getvalue()).decode()} style="max-width:480px;" </img></td>
                </tr>
+               <tr style="width:100%; height:2px; border:1px solid #111; padding-left:15px;"> <td colspan="2"></td></tr>
                <tr style="width:100%; padding-bottom:5px; border-bottom: 1px solid #111;">
                <td style="padding-left: 15px;  font:1.3em;border:none;" colspan="1">Brands for which error contribution is higher than volume contribution in last 3 months</td>
                <td style="padding-left: 15px;border:none;" colspan="1"><img src="data:image/png;base64,{base64.b64encode(buf4.getvalue()).decode()} style="max-width:580px;"</img></td>
                </tr>
+               <tr style="width:100%; height:2px; border:1px solid #111; padding-left:15px; margin-left:15px;"><td colspan="2"></td></tr>
                <tr style="width:100%; padding-bottom:5px;border-bottom: 1px solid #111;">
                <td style="padding-left: 15px; font:1.3em;border:none;" colspan="1">High negative BIAS brands </td>
                <td style="padding-left: 15px;border:none;"><img src="data:image/png;base64,{base64.b64encode(buf2.getvalue()).decode()} style="max-width:510px;" </img></td>
                </tr>
+               <tr style="width:100%; height:2px; border:1px solid #111; padding-left:15px; margin-left:15px;" colspan="2"><td colspan="2"></td></tr>
                <tr style="width:100%; padding-bottom:5px;border-bottom: 1px solid #111;">
                <td style="padding-left: 15px; font:1.3em;border:none;" colspan="1">High positive BIAS brands </td>
                <td style="padding-left: 15px;border:none;"><img src="data:image/png;base64,{base64.b64encode(buf5.getvalue()).decode()} style="max-width:510px;" </img></td>
                </tr>
+               <tr style="width:100%; height:2px; border:1px solid #111; padding-left:15px; margin-left:15px; margin-top:9px;"><td colspan="2"></td></tr>
          </table>
          </div>
          </body>
