@@ -38,25 +38,25 @@
             <div class="ui segment mitem" id="td1"><h2 style="margin-top:30px;"><span style='color:#FFCC33'>YoY</span> Change vs LY</h2>
               <p>Brands with high difference in next year growth compared to this year's growth</p>
               <!-- <button class="ui btn" onclick="">Download</button>-->
-            <div class="ui striped celled very compact" id="table1"></div></div>
+            <div class="ui striped celled very compact" id="table1" name="growth"></div></div>
             <div class="ui segment mitem" id="td2"><h2 style="margin-top:30px;"><span style='color:#FFCC33'>Top</span> -ve FVA</h2>
               <p>Top Error contributors with -FVA (Stat Accu. > DF Accu) in last 3 months</p>
-            <div class="ui striped celled very compact" id="table2"></div></div>
+            <div class="ui striped celled very compact" id="table2" name="FVA"></div></div>
             <div class="ui segment mitem" id="td3"><h2 style="margin-top:30px;"><span style='color:#FFCC33'>Top</span> -ve 3M DF Bias</h2>
               <p>Top Error contributors with high negative Bias in last 3 months</p>
-            <div class="ui striped celled very compact" id="table3"></div></div>
+            <div class="ui striped celled very compact" id="table3" name="negBias"></div></div>
             <div class="ui segment mitem" id="td4"><h2 style="margin-top:30px;"><span style='color:#FFCC33'>High</span> +ve 3M DF Bias</h2>
               <p>Top Error contributors with high positive Bias in last 3 months</p>
-            <div class="ui striped celled very compact" id="table4"></div></div>
+            <div class="ui striped celled very compact" id="table4" name="posBias"></div></div>
             <div class="ui segment mitem" id="td5"><h2 style="margin-top:30px;"><span style='color:#FFCC33'>Maximum</span> Err Increase</h2>
               <p>Items which saw maximum increase in error last month </p>
-            <div class="ui striped celled very compact" id="table5"></div></div>
+            <div class="ui striped celled very compact" id="table5" name="errInc"></div></div>
             <div class="ui segment mitem" id="td7"><h2 style="margin-top:30px;"><span style='color:#FFCC33'>High</span> Err Contributor</h2>
               <p>Items where Error Contribution is higher than Order Contribution in last 3 months</p>
-            <div class="ui striped celled very compact" id="table7"></div></div>
+            <div class="ui striped celled very compact" id="table7" name="errCont"></div></div>
             <div class="ui segment mitem" id="td8"><h2 style="margin-top:30px;"><span style='color:#FFCC33'>High</span> Fidelity Items</h2>
               <p>Items where changes between L0 and L1 is high</p>
-            <div class="ui striped celled very compact" id="table8"></div></div>
+            <div class="ui striped celled very compact" id="table8" name="fidelity"></div></div>
           </div>
         <div id="chd" class="ui segment six wide column" style="max-height: 450px;position: sticky;top: 55px;">
           <div class="ui left pointing label" style="margin-bottom: 10px;" id="ctitle">Select any {{rl|safe}} to view its trend</div>
@@ -66,13 +66,9 @@
         console.log({{today|tojson}})
         const { createClient } = supabase
         const _supabase = createClient('https://dkhazkhfoavuuwfanlif.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRraGF6a2hmb2F2dXV3ZmFubGlmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjYyNzg4MDYsImV4cCI6MjA0MTg1NDgwNn0.eMBd7llKoaVoWg9_9gOg6ISGdp_Nxe1w0-00TMRcuFY');
-        //var today = new Date({{today|tojson}});
-        //var lmd = new Date(today.getFullYear(), today.getMonth() - 1, 1);
         var lmd = new Date({{today|tojson}});
         console.log(lmd);
-        //console.log({{rl}});
         rl={{rl|tojson}}
-        //rl=rl.trim()
         const { tidy, mutate, arrange, desc, summarize, sum, groupBy, select,filter,distinct } = Tidy;
         df={{jdf|safe}};
         ph1={{ph1|tojson}}
@@ -93,8 +89,9 @@
             var cc =[{formatter:copyIcon, width:40, hozAlign:"center", cellClick: async function (e, cell) {
             ct=cell.getRow().getData()[rl]
             navigator.clipboard.writeText(ct);
-            $.toast({class: 'success',position: 'top center',message: "Copied : " + ct});     
-            async function ind1(cell) {const { error } = await _supabase.from('apa').insert([{ type:"copy",catalognumber:cell.getRow().getData().CatalogNumber,title:document.title },]);
+            $.toast({class: 'success',position: 'top center',message: "Copied : " + ct});
+            nam=cell.getRow().getElement().parentElement.parentElement.parentElement.getAttribute("name");
+            async function ind1(cell) {const { error } = await _supabase.from('apa').insert([{ type:"copy",catalognumber:cell.getRow().getData().CatalogNumber,title:document.title,name:nam },]);
                 console.log(cell);}
             ind1(cell)
           }}]
@@ -134,7 +131,6 @@
           axisLabel: {
         formatter: '{MMM} {yy}'
         },
-          
         },
         yAxis: {type: 'value'},
         series: [
@@ -172,10 +168,9 @@
             itemStyle: {color: '#91cc75'}
           }
         ]}
-       async function ind(row) {const { error } = await _supabase
-              .from('apa')
-              .insert([
-              { type:"click",catalognumber:row.getData().CatalogNumber,title:document.title },]);}
+        nam=row.getElement().parentElement.parentElement.parentElement.getAttribute("name");
+       async function ind(row) {const { error } = await _supabase.from('apa').insert([
+       { type:"click",catalognumber:row.getData().CatalogNumber,title:document.title,name:nam },]);}
        ind(row);
     };
       window.addEventListener('resize', function() {myChart.resize();});

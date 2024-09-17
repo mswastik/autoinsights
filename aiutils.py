@@ -105,6 +105,6 @@ for sfn in maf['Filename'].unique():
       mail.SentOnBehalfOfName="apa_demandcoe@stryker.com"
       mail.Subject=f"[Planning Advisor]-[{i['Location Value']} {shead}]-{today.strftime('%b-%y')} "
       mail.HTMLbody=ht
-      mail.Attachments.Add(os.getcwd()+"\\reports"+f"\\{lhead}-{shead}.html")
-      mail.Send()
+      #mail.Attachments.Add(os.getcwd()+"\\reports"+f"\\{lhead}-{shead}.html")
+      #mail.Send()
       print(f'Sent for  {i['Location Value']} - {i['Product Value']}')
