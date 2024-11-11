@@ -48,7 +48,7 @@ def genai(loch,loc,prodh,prod,df,uom,shead,lhead,rl):
     #print(df.columns)
     df=df.drop(['Selling Division','Business Sector','Business Unit','UOM','Act Orders Rev Val','`L0 ASP Final Rev'])
     #df=df.group_by([loch,'Franchise','CatalogNumber','Product Line',ph,'SALES_DATE']).sum()
-    df=df.group_by(['Franchise',rl,'Product Line',ph,'SALES_DATE']).sum()
+    df=df.group_by(['Franchise',rl,'IBP Level 7',ph,'SALES_DATE']).sum()
     df=df.with_columns((pl.when(pl.col('SALES_DATE')<=datetime(today.year,today.month,1)-relativedelta(months=1)).then(pl.col('`Act Orders Rev')).otherwise(pl.col('`Fcst DF Final Rev'))).alias('ActwFC'))
     df1=df.filter((df['SALES_DATE']>=datetime(today.year,today.month,1)-relativedelta(months=12)) & (df['SALES_DATE']<=datetime(today.year,today.month,1)+relativedelta(months=12)))
     cc=list(df1.group_by(rl).sum().sort(by='ActwFC',descending=True)[rl][:sk])
@@ -61,9 +61,11 @@ def genai(loch,loc,prodh,prod,df,uom,shead,lhead,rl):
     tf=fdf.group_by(rl).sum().top_k(10,by='Fidelity L0L1')
     fdf=fdf.filter(pl.col(rl).is_in(tf[rl].unique()))
     fdf=fdf.with_columns((pl.col('SALES_DATE').dt.date()).alias('SALES_DATE'))
-    fdf=fdf.pivot(index=rl,columns='SALES_DATE',values='Fidelity L0L1',aggregate_function='sum')
-    fdf = fdf[fdf.columns[:1]+sorted(fdf.columns[1:])]
-    fdf=fdf.sort(pl.col(rl).replace({val: idx for idx, val in enumerate(tf[rl].to_list())},default=None))
+    fdf=fdf.pivot(index=[rl,'IBP Level 7'],columns='SALES_DATE',values='Fidelity L0L1',aggregate_function='sum')
+    fdf = fdf[fdf.columns[:2]+sorted(fdf.columns[2:])]
+    fdf=fdf.with_columns(sum=pl.sum_horizontal(fdf.columns[2:]))
+    fdf=fdf.filter(pl.col('sum')>70).sort('sum',descending=True).drop('sum')
+    #fdf=fdf.sort(pl.col(rl).replace({val: idx for idx, val in enumerate(tf[rl].to_list())},default=None))
     
     gdf=df.clone().sort([ph,'SALES_DATE'],descending=False)
     gdf=gdf.group_by(ph,pl.col('SALES_DATE').dt.year()).sum().sort([ph,'SALES_DATE'],descending=False)
@@ -135,13 +137,15 @@ def genai(loch,loc,prodh,prod,df,uom,shead,lhead,rl):
     df5=df5.with_columns(pl.col('L2 DF Acc').diff().over([rl]).alias('DF Decrease'))
     df5=df5.with_columns(pl.col('L2 DF Abs Err').diff().over([rl]).alias('L2 DF Err Inc'))
     df5=df5.with_columns(pl.col('L2 Stat Abs Err').diff().over([rl]).alias('L2 Stat Err Inc'))
-
+    
+    # Bias
     df6=df5.melt([ph,rl,'SALES_DATE','3M Orders Cont','3M DF Err Cont','3M Stat Err Cont','L2 Stat Acc','L2 DF Acc','FC change','3M DFBias','3M StatBias','3M FVA','Stat Decrease','DF Decrease'])
     df6=df6.rename({'variable':'type'})
-    ddf2=df5.filter(pl.col('SALES_DATE')==datetime(today.year,today.month,1)-relativedelta(months=1)).top_k(80,by='3M DF Err Cont').filter(pl.col('3M DFBias')<-.05).to_pandas()[[ph,rl,'3M DFBias','3M DF Err Cont']][:10]
-    ddf3=df5.filter(pl.col('SALES_DATE')==datetime(today.year,today.month,1)-relativedelta(months=1)).top_k(80,by='3M DF Err Cont').filter(pl.col('3M DFBias')>.05).to_pandas()[[ph,rl,'3M DFBias','3M DF Err Cont']][:10]
+    ddf2=df5.filter(pl.col('SALES_DATE')==datetime(today.year,today.month,1)-relativedelta(months=1)).top_k(80,by='3M DF Err Cont').filter(pl.col('3M DFBias')<-.05).to_pandas()[[ph,'IBP Level 7',rl,'3M DFBias','3M DF Err Cont']][:10]
+    ddf3=df5.filter(pl.col('SALES_DATE')==datetime(today.year,today.month,1)-relativedelta(months=1)).top_k(80,by='3M DF Err Cont').filter(pl.col('3M DFBias')>.05).to_pandas()[[ph,'IBP Level 7',rl,'3M DFBias','3M DF Err Cont']][:10]
 
-    fdf1=df5.filter(pl.col('SALES_DATE')==datetime(today.year,today.month,1)-relativedelta(months=1)).filter(pl.col('3M FVA')<-0.005).to_pandas().sort_values('3M DF Err Cont',ascending=False)[[ph,rl,'3M L2DF Acc','3M L2Stat Acc','3M FVA','3M DF Err Cont']][:10]
+    #FVA
+    fdf1=df5.filter(pl.col('SALES_DATE')==datetime(today.year,today.month,1)-relativedelta(months=1)).filter(pl.col('3M FVA')<-0.005).to_pandas().sort_values('3M DF Err Cont',ascending=False)[[ph,'IBP Level 7',rl,'3M L2DF Acc','3M L2Stat Acc','3M FVA','3M DF Err Cont']][:10]
     fdf1['3M L2DF Acc']=fdf1['3M L2DF Acc'].map('{:.1%}'.format)
     fdf1['3M L2Stat Acc']=fdf1['3M L2Stat Acc'].map('{:.1%}'.format)
     fdf1['3M DF Err Cont']=fdf1['3M DF Err Cont'].map('{:.1%}'.format)
@@ -156,7 +160,6 @@ def genai(loch,loc,prodh,prod,df,uom,shead,lhead,rl):
         #pass
         print(prod+" Passed")
         #edf=edf[:10]
-    #print(edf['SALES_DATE'].unique())
     edf=edf.to_pandas()
     edf['SALES_DATE']=edf['SALES_DATE'].dt.date
 
@@ -219,21 +222,22 @@ def genai(loch,loc,prodh,prod,df,uom,shead,lhead,rl):
     ddf2['3M DF Err Cont'] = ddf2['3M DF Err Cont'].map('{:,.1%}'.format)
     ddf3['3M DFBias']=ddf3['3M DFBias'].map('{:,.1%}'.format)
     ddf3['3M DF Err Cont'] = ddf3['3M DF Err Cont'].map('{:,.1%}'.format)
-    #if len(edf)>0:
-    eidf=edf.pivot(index=[ph,rl],columns='SALES_DATE',values='L2 DF Abs Err').sort_values(lmon,ascending=False).reset_index()
+
+    # Max Error Increase
+    eidf=edf.pivot(index=[ph,rl,'IBP Level 7'],columns='SALES_DATE',values='L2 DF Abs Err').sort_values(lmon,ascending=False).reset_index()
     eidf.columns=list(map(str,eidf.columns))
-    eidf[eidf.columns[2]]=eidf[eidf.columns[2]].map('{:,.0f}'.format)
-    eidf[eidf.columns[3]] = eidf[eidf.columns[3]].map('{:,.0f}'.format)
+    eidf[eidf.columns[3]]=eidf[eidf.columns[3]].map('{:,.0f}'.format)
+    eidf[eidf.columns[4]] = eidf[eidf.columns[4]].map('{:,.0f}'.format)
     if len(eidf)>10:
         eidf=eidf[:3]
     #else:
     #    eidf=edf.copy()
     df6=df5.to_pandas()
-    # Growth - tmdf2
-    # FVA - ddf1
+    # Growth - tmdf2 tmdf1
+    # FVA - fdf1
     # +Bias - ddf3
     # -Bias - ddf2
-    # Error Cont - fdf1
+    # Error Cont - fdf1 edf2
     # Max Err Inc - eidf
     #pad=pl.read_excel(f"C:\\Users\\smishra14\\OneDrive - Stryker\\data\\padata.xlsx",infer_schema_length=5000,schema_overrides={'SALES_DATE':pl.Datetime,'CatalogNumber':pl.String,'UOM':pl.Float64,'`L0 ASP Final Rev':pl.Float64,'`Act Orders Rev':pl.Float64,'Act Orders Rev Val':pl.Float64,'L2 DF Final Rev':pl.Float64,'L1 DF Final Rev':pl.Float64,'L0 DF Final Rev':pl.Float64,'L2 Stat Final Rev':pl.Float64,'`Fcst DF Final Rev':pl.Float64,'`Fcst Stat Final Rev':pl.Float64,'`Fcst Stat Prelim Rev':pl.Float64,'Fcst DF Final Rev Val':pl.Float64})
     pad=pl.read_parquet(f"C:\\Users\\smishra14\\OneDrive - Stryker\\data\\padata.parquet")
@@ -256,8 +260,8 @@ def genai(loch,loc,prodh,prod,df,uom,shead,lhead,rl):
                            sc5=list(ddf3.columns),
                            jdf6=eidf.to_json(orient='records'),
                            sc6=list(map(str,eidf.columns)),
-                           jdf7=edf2[[ph,rl,'L2 DF Acc', '3M DFBias','3M FVA','3M Orders Cont','3M DF Err Cont']].sort_values('3M DF Err Cont',ascending=False).to_json(orient='records'),
-                           sc7=[ph,rl,'L2 DF Acc', '3M DFBias','3M FVA','3M Orders Cont','3M DF Err Cont'],
+                           jdf7=edf2[[ph,rl,'IBP Level 7','L2 DF Acc', '3M DFBias','3M FVA','3M Orders Cont','3M DF Err Cont']].sort_values('3M DF Err Cont',ascending=False).to_json(orient='records'),
+                           sc7=[ph,rl,'IBP Level 7','L2 DF Acc', '3M DFBias','3M FVA','3M Orders Cont','3M DF Err Cont'],
                            fdf=fdf.to_pandas().to_json(orient='records'),
                            fcol=list(map(str,fdf.columns)),
                            loc=loc,

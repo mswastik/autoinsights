@@ -11,7 +11,7 @@ today=datetime.today().replace(day=1)
 alt.themes.enable('powerbi')
 #maf=pl.read_excel("F:\\COE Projects\\Swastik\\mapping.xlsx",sheet_name='Sheet2')   #UNCOMMENT on VM
 #maf=pl.read_excel("C:\\Users\\smishra14\\OneDrive - Stryker\\python\\autoinsights\\archive\\mapping1.xlsx",sheet_name='Sheet1')
-maf=pl.read_excel("C:\\Users\\smishra14\\OneDrive - Stryker\\python\\autoinsights\\map.xlsx",sheet_name='Sheet5')
+maf=pl.read_excel("C:\\Users\\smishra14\\OneDrive - Stryker\\python\\autoinsights\\map.xlsx",sheet_name='Sheet2')
 for sfn in maf['Filename'].unique():
    sfdf=maf.filter(pl.col('Filename')==sfn)
    print(sfn)
