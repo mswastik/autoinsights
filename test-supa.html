@@ -92,7 +92,7 @@
             $.toast({class: 'success',position: 'top center',message: "Copied : " + ct});
             nam=cell.getRow().getElement().parentElement.parentElement.parentElement.getAttribute("name");
             async function ind1(cell) {const { error } = await _supabase.from('apa').insert([{ type:"copy",catalognumber:cell.getRow().getData().CatalogNumber,title:document.title,name:nam },]);
-                console.log(cell);}
+                }
             ind1(cell)
           }}]
           };
@@ -169,9 +169,10 @@
           }
         ]}
         nam=row.getElement().parentElement.parentElement.parentElement.getAttribute("name");
+        console.log(e);
        async function ind(row) {const { error } = await _supabase.from('apa').insert([
        { type:"click",catalognumber:row.getData().CatalogNumber,title:document.title,name:nam },]);}
-       ind(row);
+       if (e['x']>90) { console.log(e['x']); ind(row);};
     };
       window.addEventListener('resize', function() {myChart.resize();});
       option && myChart.setOption(option);
