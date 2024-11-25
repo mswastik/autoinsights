@@ -39,7 +39,7 @@ def genai(loch,loc,prodh,prod,df,uom,shead,lhead,rl):
         df=df.with_columns(pl.col('`Fcst DF Final Rev')*pl.col('UOM'))
         df=df.with_columns(pl.col('`Fcst Stat Final Rev')*pl.col('UOM'))
         df=df.with_columns(pl.col('`Fcst Stat Prelim Rev')*pl.col('UOM'))
-    if len(df['IBP Level 5'].unique())<10:
+    if (len(df['IBP Level 5'].unique())<10) | ((df['Country'].unique()[0]=='UNITED STATES') & (df['Business Unit'].unique()[0]=='Upper Extremities')):
         ph='IBP Level 6'
         #df=df.drop(columns=["IBP Level 5"])
     else:
@@ -268,7 +268,7 @@ def genai(loch,loc,prodh,prod,df,uom,shead,lhead,rl):
                            prod=prod,
                            ph1=ph,
                            rl=rl,
-                           today=str(lmon))
+                           today=str(datetime.today()))
     with open(f"reports//{lhead}-{shead}.html", "w") as fh:
         fh.write(html)
     return bb1,bb2,bb3,bb4,bb2b
