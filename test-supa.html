@@ -21,8 +21,8 @@
       }
     </style>
     <body>
-      <div class="ui top fixed sticky row grid segment" style="width:100%;height:4em;padding-top:0px;margin-top:-6px;margin-bottom: 0px;padding-bottom: 0px;padding-left:10px ;background-color:white; white-space: nowrap;">
-      <h1 class="ui header column"><span style="color:#FFCC33; white-space: nowrap;"><b>Planning Advisor</b></span> for {{loc}} - {{prod}}</h1><p class="ui right floated column">{{today}}</p></div>
+      <div class="ui top fixed sticky row grid segment" style="width:100%;height:4em;padding-top:0px;margin-top:-6px;margin-bottom: 0px;padding-bottom: 0px;padding-left:10px; padding-right:90px;background-color:white; white-space: nowrap;">
+      <h1 class="ui header column"><span style="color:#FFCC33; white-space: nowrap;"><b>Planning Advisor</b></span> for {{loc}} - {{prod}}</h1><p class="ui right floated column">Report Date {{today}}</p></div>
       <div class="ui grid" style="margin-top: 50px;">
       <div class="ui one wide column">
         <div class="ui inverted vertical menu" style="position: sticky; top:120px;max-width: 97px;">
@@ -75,7 +75,6 @@
         var copyIcon = function(cell, formatterParams){return "<i class='copy outline icon'></i>";};
         mon=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
         df=tidy(df,mutate({'SALES_DATE': (d) => new Date(d['SALES_DATE'])}));
-        //df=tidy(df,mutate({'SALES_DATE':(d) => `${mon[d['SALES_DATE'].getMonth()]}-${String(d['SALES_DATE'].getFullYear()).slice(2,4)}`}));
         async function tdff(tdf,cn,ide) {
           if (ide=="#table1") {
             rr=true
@@ -96,11 +95,9 @@
             ind1(cell)
           }}]
           };
-          //console.log(a)
           
           Object.keys(cn).forEach(async function(key) {
           cc.push({title:String(cn[key]),field:String(cn[key]),maxWidth:205,minWidth:80});});
-          
           var table = new Tabulator(ide, {
           data:a,
           columns: cc,

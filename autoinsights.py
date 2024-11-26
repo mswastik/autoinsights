@@ -68,6 +68,10 @@ def genai(loch,loc,prodh,prod,df,uom,shead,lhead,rl):
     #fdf=fdf.sort(pl.col(rl).replace({val: idx for idx, val in enumerate(tf[rl].to_list())},default=None))
     
     gdf=df.clone().sort([ph,'SALES_DATE'],descending=False)
+    if gdf['SALES_DATE'].min().date()==date(today.year-3,1,1):
+        miy=3
+    else:
+        miy=2
     gdf=gdf.group_by(ph,pl.col('SALES_DATE').dt.year()).sum().sort([ph,'SALES_DATE'],descending=False)
     gdf=gdf.with_columns(pl.col('ActwFC').pct_change().over(ph).alias("YoY growth"))[[ph,'SALES_DATE','ActwFC','YoY growth']]
     gdf=gdf.with_columns(pl.col('YoY growth').diff().over(ph).alias("LY YoY"))
@@ -81,7 +85,7 @@ def genai(loch,loc,prodh,prod,df,uom,shead,lhead,rl):
     tmdf['ActwFC']=tmdf['ActwFC'].round(0).map('{:,.0f}'.format)
     tmdf=tmdf.melt([ph,'SALES_DATE'])
     tmdf=tmdf.rename(columns={'variable':'Measure'})
-    tmdf=tmdf[(tmdf['SALES_DATE']>today.year-3) & (tmdf['SALES_DATE']<today.year+2)]
+    tmdf=tmdf[(tmdf['SALES_DATE']>today.year-miy) & (tmdf['SALES_DATE']<today.year+2)]
     tmdf1=tmdf.pivot(index=[ph,'Measure'],columns='SALES_DATE',values='value')
  
     df5=df1.clone()
@@ -268,7 +272,7 @@ def genai(loch,loc,prodh,prod,df,uom,shead,lhead,rl):
                            prod=prod,
                            ph1=ph,
                            rl=rl,
-                           today=str(datetime.today()))
+                           today=str(date.today()))
     with open(f"reports//{lhead}-{shead}.html", "w") as fh:
         fh.write(html)
     return bb1,bb2,bb3,bb4,bb2b
